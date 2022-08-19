@@ -6,6 +6,6 @@ public class CacheKeyAttribute : Attribute
 }
 
 [AttributeUsage(AttributeTargets.Method)]
-public class ToCacheAttribute : Attribute
+public class CachePerRequestAttribute : Attribute
 {
 }

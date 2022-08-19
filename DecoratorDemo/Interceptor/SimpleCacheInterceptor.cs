@@ -2,11 +2,11 @@
 
 namespace DecoratorDemo.Interceptor;
 
-internal class SimpleCacheInterceptor : AsyncInterceptorBase
+internal class CachePerRequestInterceptor : AsyncInterceptorBase
 {
     private readonly ISimpleCache _requestCache;
 
-    public SimpleCacheInterceptor(ISimpleCache requestCache)
+    public CachePerRequestInterceptor(ISimpleCache requestCache)
     {
         _requestCache = requestCache;
     }
@@ -18,7 +18,7 @@ internal class SimpleCacheInterceptor : AsyncInterceptorBase
 
     protected override async Task<TResult> InterceptAsync<TResult>(IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task<TResult>> proceed)
     {        
-        if (invocation.TargetType.GetMethod(invocation.Method.Name).GetCustomAttributes(false).Any(p => p.GetType() == typeof(ToCacheAttribute)))
+        if (invocation.TargetType.GetMethod(invocation.Method.Name).GetCustomAttributes(false).Any(p => p.GetType() == typeof(CachePerRequestAttribute)))
         {
             return await CacheMethod(invocation, proceedInfo, proceed);
         }

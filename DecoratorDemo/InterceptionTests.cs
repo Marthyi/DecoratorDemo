@@ -7,7 +7,7 @@ using Xunit;
 
 namespace DecoratorDemo;
 
-public class UnitTest1
+public class InterceptionTests
 {
     [Fact]
     public async void TestDecorator()
@@ -20,7 +20,7 @@ public class UnitTest1
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.Intercept<IUserRepository>(
-                            typeof(SimpleCacheInterceptor),
+                            typeof(CachePerRequestInterceptor),
                             typeof(LoggingInterceptor)
                             );      
 
@@ -28,7 +28,6 @@ public class UnitTest1
         var provider = services.BuildServiceProvider();
 
         IUserRepository repository = provider.GetService<IUserRepository>();
-
 
         await AssertDuration(async () => await repository.GetUserById("titi", 42), p => p.TotalMilliseconds > 500);
         await AssertDuration(async () => await repository.GetUserById("tata", 42), p => p.TotalMilliseconds > 500);
