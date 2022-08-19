@@ -3,16 +3,18 @@
     public class UserRepository : IUserRepository
     {
 
-        public async Task<User> GetUserById(string dummyParam, int id)
+        [ToCache]
+        public async Task<User> GetUserById([CacheKey] string dummyParam, [CacheKey] int id)
         {
             await Task.Delay(500);
-            return new User() { Name = $"Bill_{id}" };
+            return new User() { Name = $"{dummyParam}_{id}" };
         }
 
-        public async Task<User> GetUserByName(string name,string nickname)
+        [ToCache]
+        public async Task<User> GetUserByName([CacheKey] string name,string nickname)
         {
             await Task.Delay(500);
-            return new User() { Name = $"name" };
+            return new User() { Name = $"{name}_{nickname}" };
         }
     }
 }

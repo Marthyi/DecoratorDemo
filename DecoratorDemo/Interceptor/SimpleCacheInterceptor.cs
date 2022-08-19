@@ -17,8 +17,8 @@ internal class SimpleCacheInterceptor : AsyncInterceptorBase
     }
 
     protected override async Task<TResult> InterceptAsync<TResult>(IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task<TResult>> proceed)
-    {
-        if (invocation.Method.GetCustomAttributes(false).Any(p => p.GetType() == typeof(ToCacheAttribute)))
+    {        
+        if (invocation.TargetType.GetMethod(invocation.Method.Name).GetCustomAttributes(false).Any(p => p.GetType() == typeof(ToCacheAttribute)))
         {
             return await CacheMethod(invocation, proceedInfo, proceed);
         }
@@ -28,7 +28,7 @@ internal class SimpleCacheInterceptor : AsyncInterceptorBase
 
     private Task<TResult> CacheMethod<TResult>(IInvocation invocation, IInvocationProceedInfo proceedInfo, Func<IInvocation, IInvocationProceedInfo, Task<TResult>> proceed)
     {
-        var parameters = invocation.Method.GetParameters()
+        var parameters = invocation.TargetType.GetMethod(invocation.Method.Name).GetParameters()
             .Select(p => new
             {
                 parameter = p,
